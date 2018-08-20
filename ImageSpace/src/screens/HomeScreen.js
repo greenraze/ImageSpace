@@ -20,7 +20,7 @@ const PAGE_SIZE = NUM_COLUMNS * 10;
 const FBCOLOR = 'rgb(59, 89, 152)';
 
 
-//fetching local images and send back to component
+//fetching  images from mobile and seding back to component
 const getImages = async params =>{
   return await new Promise((res, rej) =>
   CameraRoll.getPhotos(params)
@@ -50,8 +50,8 @@ const getImages = async params =>{
 
   //we are implementing the infinit scrolling by using  CameraRoll and flatlist
   //on scrolling when user reach at the end of scroll the callback call the getMoreImages
-  //there is a small trick is in using  "has_next_page"and "end_cursor" provided by CameraRoll response
-  //that tell is there more images in mobile? then fetch after "end_cursor" them and concat with exsisting image array
+  //there small trick is in using  "has_next_page"and "end_cursor" provided by CameraRoll
+  //that tell is there more images in mobile then fetch after "end_cursor" them and concat with exsisting image array
   //we are updating  the "end_cursor" and "has_next_page" after every "onEndReached" call
   getMoreImages = () => {
     InteractionManager.runAfterInteractions(async () => {
@@ -74,7 +74,14 @@ const getImages = async params =>{
     });
   };
 
+  //navigation to TakePictureScreen screen
+  goToCameraScreen = () => {
+    this.props.navigation.navigate('TakePictureScreen');
+  }
+
+
   //render contain a list that shows the three image in a row
+  //and a button to take more image from camera
   render = () => (
     <View style={styles.container}>
       <List
@@ -82,12 +89,17 @@ const getImages = async params =>{
         onEndReached={this.getMoreImages}
         hasMore={this.state.has_next_page}
       />
+      <TouchableOpacity
+        onPress={this.goToCameraScreen}
+        style={styles.captureButtonStyle}>
+        <Ionicons name="md-camera" size={60} color={FBCOLOR} />
+      </TouchableOpacity>
     </View>
   );
 }
 
 //List as a  PURECOMPONENT
-// it takes images array for rendering and  hasMore for passing to FooterComponent
+// it takes images array for resndering and  hasMore fro passing to FooterComponent
 //the main thing is onEndReached
 // when scroll reached its end then onEndReached callback call and load more images
 const List = ({ hasMore, images, onEndReached }) => (
@@ -104,7 +116,7 @@ const List = ({ hasMore, images, onEndReached }) => (
   />
 );
 
-//Item as a  PURECOMPONENT contain image view
+//Item as a  PURECOMPONENT
 const Item = ({ uri }) => (
   <TouchableOpacity style={styles.touchable}>
     <Image style={styles.image} source={{ uri }} />
@@ -113,7 +125,7 @@ const Item = ({ uri }) => (
 
 //LoadingFooter as a  PURECOMPONENT
 //it retuns "Loading more photos..." when CameraRoll is fetching images
-//  and "That's all!" when there are no more  saved images
+//  and "That's all!" when there are nomore  saved images images  in a textview
 const LoadingFooter = ({ hasMore }) => (
   <View style={styles.footerContainer}>
     {hasMore && <ActivityIndicator />}

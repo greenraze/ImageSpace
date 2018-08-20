@@ -16,8 +16,8 @@ class ImagePickerModal extends React.Component {
 
   //we are using expo API for facebook login
   //settled the facebook provided APPID in logInWithReadPermissionsAsync method
-  //get the  'type' attribute to check user successfully login
-
+  //get the  'type' attribute to check   user has been successfully login
+  //after successfull login navigate to HomeScreen
   loginWithFacebook = async () => {
     const { type } = await Expo.Facebook.logInWithReadPermissionsAsync(
       FACEBOOK_APP_ID,
@@ -26,19 +26,15 @@ class ImagePickerModal extends React.Component {
       }
     );
     if (type === 'success') {
-      console.log('success');
+      this.props.navigation.navigate('HomeScreen');
     } else {
       if (type !== 'cancel'){
-        Alert.alert(
-          'Failure',
-          'Unable to Login'
-          [{ text: 'Ok',}],
-        )
+        alert('Unable To Login')
       }
     }
   }
 
-  //screen shows a textview containig ap name
+  //screen shows a textview containig app name
   //and a button for login with facebook
   render = () => (
     <View style={styles.container}>
